@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class drawTracks : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Camera mainCam;
+
+    public Material drawMat;
+    public Shader drawShader;
+
+    public Material snowMat;
+    public Material snowShader;
+    
+    
     void Start()
     {   
         
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         
     }
+
+
 }

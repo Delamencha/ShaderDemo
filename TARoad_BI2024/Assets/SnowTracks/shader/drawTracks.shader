@@ -4,6 +4,7 @@ Shader "Unlit/drawTracks"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Coordinates("Coordiantes", Vector) = (0, 0, 0, 0)
+        _DrawColor("Draw Color", Color) = (1, 0, 0, 1)
     }
     SubShader
     {
@@ -33,6 +34,7 @@ Shader "Unlit/drawTracks"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float4 _Coordinates;
+            float4 _DrawColor;
 
             v2f vert (a2v v)
             {
