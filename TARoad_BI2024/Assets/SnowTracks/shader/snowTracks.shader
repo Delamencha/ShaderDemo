@@ -45,7 +45,9 @@ Shader "Unlit/snowTracks"
                 v2f o;
                 //1.using height map, offset vertex  
                 half heightValue = tex2Dlod(_HeightMap, float4(v.uv, 0, 0)).r;
-                v.vertex.xyz -= (heightValue ) * _SnowHeight * v.normal;
+                v.vertex.xyz += _SnowHeight * v.normal;
+                v.vertex.xyz -=  ( heightValue ) * _SnowHeight * v.normal;
+               
                 o.heightValue = heightValue;
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -61,6 +63,7 @@ Shader "Unlit/snowTracks"
                 //2.using height map, blend between surface & ground
                 fixed4 finalCol = lerp(surfCol, botCol, i.heightValue);
 
+                
                 return finalCol;
             }
             ENDCG
