@@ -33,8 +33,8 @@ Shader "Unlit/drawTracks"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float4 _Coordinates;
-            float4 _DrawColor;
+            fixed4 _Coordinates;
+            fixed4 _DrawColor;
 
             v2f vert (a2v v)
             {
@@ -49,7 +49,10 @@ Shader "Unlit/drawTracks"
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                return col;
+                float draw = pow(saturate(1 - distance(i.uv, _Coordinates.xy)), 200);
+                fixed4 drawCol = _DrawColor * (draw * 0.1);
+                //return col;
+                return saturate(col + drawCol);
             }
             ENDCG
         }
