@@ -4,66 +4,113 @@ using UnityEngine;
 
 public class FlockBehaviour : MonoBehaviour
 {
-    
-    private Vector3 velocity;
-    private Vector3 newVelocity;
-    private Vector3 acceleration;
 
+    public FlockControl controller;
 
-    public float minSpeed = 1, maxSpped = 5;
+    float noiseOffset;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        acceleration = new Vector3(0,0,0);
-        velocity = Random.insideUnitSphere;
-        velocity.Normalize();
-        float velocityMag = Random.Range(minSpeed, maxSpped);
-        velocity *= velocityMag;
+        noiseOffset = Random.value * 10.0f;
 
+    }
 
+    Vector3 GetSeparationVec(Transform t)
+    {
+        Vector3 diff = transform.position - t.transform.position;
+        float diffLen = diff.magnitude;
+
+        return (diff / diffLen) * Mathf.Clamp01(1.0f - diffLen / controller.NeighbourDist);
     }
 
     // Update is called once per frame
     void Update()
     {
+        Vector3 currentPos = transform.position;
+        Quaternion currentRota = transform.rotation;
 
-        Vector3 tarPos = transform.position;
-        tarPos += velocity * Time.deltaTime;
-        transform.position = tarPos;
+        var noise = Mathf.PerlinNoise(Time.time, noiseOffset) * 2.0f - 1.0f;
 
-        newVelocity =  velocity + acceleration * Time.deltaTime;
-        newVelocity = Vector3.Normalize(newVelocity) * velocity.magnitude;
+        float currentVel = controller.velocity * ( 1.0f + noise * controller.velocityVarration);
 
-        if (newVelocity.sqrMagnitude > maxSpped * maxSpped)
+        Vector3 alignment = controller.transform.forward;
+        Vector3 cohesion = controller.transform.position;
+        Vector3 separation = Vector3.zero;
+
+        Collider[] neighbour = Physics.OverlapSphere(currentPos, controller.NeighbourDist, controller.searchLayer);
+
+        foreach(Collider co in neighbour)
         {
-            newVelocity = Vector3.Normalize(newVelocity) * maxSpped;
+            if(co.gameObject == gameObject)
+            {
+                continue;
+            }
+
+            Transform t = co.transform;
+            alignment += t.forward;
+            cohesion += t.position;
+            separation += GetSeparationVec(t);
+
         }
 
-    }
-    private void LateUpdate()
-    {
-        velocity = newVelocity;
+        if(neighbour.Length > 0)
+        {
+            //Debug.Log(neighbour.Length);
+            alignment /= neighbour.Length;
+            cohesion /= neighbour.Length;
+        }
+
+        cohesion = (cohesion - currentPos).normalized;
+
+
+        Vector3 direction = alignment + cohesion + separation;
+
+        //是用 Vector3.forward 为基准而非 transform.forward
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, direction.normalized);
+
+
+        if(rotation != currentRota)
+        {
+            //Time.deltaTime介入， 同时RotationCoeff越大，it越靠近0，角度越靠近rotation
+            float it = Mathf.Exp(-controller.RotationCoeff * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(rotation, currentRota, it);
+        }
+
+
+        transform.position = currentPos + transform.forward * currentVel * Time.deltaTime;
+
+        //boundaryMovement();
     }
 
-    public void setVelocity(Vector3 vel)
+    void boundaryMovement()
     {
-        velocity = vel;
+        if (transform.position.x > 6)
+        {
+            transform.position = new Vector3(-6, transform.position.y, transform.position.z);
+        }
+        if (transform.position.x < -6)
+        {
+            transform.position = new Vector3(6, transform.position.y, transform.position.z);
+        }
+        if (transform.position.y > 10)
+        {
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        }
+        if (transform.position.y < 0)
+        {
+            transform.position = new Vector3(transform.position.x, 10, transform.position.z);
+        }
+        if (transform.position.z > 5)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -5);
+        }
+        if (transform.position.z < -5)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, 5);
+        }
     }
 
-    public Vector3 getVelocity()
-    {
-        return velocity;
-    }
-
-    public void setAcceleration(Vector3 accel)
-    {
-        acceleration = accel;
-    }
-
-    public Vector3 getAcceleration()
-    {
-        return acceleration;
-    }
 
 }
