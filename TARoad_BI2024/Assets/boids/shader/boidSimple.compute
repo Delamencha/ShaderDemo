@@ -1,15 +1,26 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel simpleBoids
+#define GROUP_SIZE 256
 
+
+struct Boid{
+    float3 position;
+    float3 direction;
+    float noise_offset;
+};
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
-RWStructuredBuffer<float3> Result;
+RWStructuredBuffer<Boid> boidBuffer;
 
-[numthreads(64,1,1)]
+[numthreads(GROUP_SIZE,1,1)]
 void simpleBoids (uint3 id : SV_DispatchThreadID)
 {
     // TODO: insert actual code here!
-
+    Boid boid = boidBuffer[id.x];
+    boid.position = float3(0.0, id.x, 0.0);
+    boid.direction = normalize(float3(0.0, id.x, 0.0));
+    boid.noise_offset = id.x;
+    boidBuffer[id.x] = boid;
     //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
     //Result[id.x] = float3(id.x * id.x, 0, 0);
 }
