@@ -574,7 +574,7 @@ MonoBehaviour:
   boid_compute: {fileID: 7200000, guid: 2016a535c71b5d347a4973eebe54c88a, type: 3}
   boidPrefab: {fileID: 3578597555301008174, guid: 8ad499113cccbc444bb8e3d78c7513df, type: 3}
   spawnRadius: 10
-  rotationCoeff: 3
+  rotationCoeff: 0.1
   neighbourDist: 4
 --- !u!4 &2035756874
 Transform:

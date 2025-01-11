@@ -61,7 +61,7 @@ public class GPU_Flock : MonoBehaviour
             boidsTransform[i].transform.position = boidData[i].position;
             Vector3 direciton = boidData[i].direction;
             Quaternion currentRotation = boidsTransform[i].transform.rotation;
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, direciton);
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, direciton.normalized);
             float it = Mathf.Exp(-rotationCoeff * Time.deltaTime);
             boidsTransform[i].transform.rotation = Quaternion.Lerp(rotation, currentRotation, it);
 
