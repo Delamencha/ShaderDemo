@@ -45,9 +45,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _DispStrength: 0
-    - _Gloss: 0.23
-    - _NormalIntensity: 0.385
-    - _SpecIBLIntensity: 1
+    - _Gloss: 0.387
+    - _NormalIntensity: 0.471
+    - _SpecIBLIntensity: 0.987
     m_Colors:
     - _AmbientLight: {r: 0.078497685, g: 0.18004626, b: 0.33962262, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
