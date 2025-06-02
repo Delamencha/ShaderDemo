@@ -34,8 +34,11 @@ Shader "Unlit/PlanarMappingShader"
                     v2f o;
 
                     o.position = UnityObjectToClipPos(v.vertex);
-                    o.uv = v.vertex.xz;
+                    
                     o.wPos = mul(unity_ObjectToWorld, v.vertex);
+
+                    //o.uv = TRANSFORM_TEX(v.vertex.xz, _MainTex);
+                    o.uv = TRANSFORM_TEX(o.wPos.xz, _MainTex);
 
                     return o;
                 }
