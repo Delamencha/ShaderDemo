@@ -23,7 +23,7 @@ public class ObraDinnPE : MonoBehaviour
     {
 
         RenderTexture main = RenderTexture.GetTemporary(820, 470, 0, RenderTextureFormat.ARGB32);
-        main.filterMode = FilterMode.Bilinear;
+        //main.filterMode = FilterMode.Bilinear;
 
         Graphics.Blit(src, main, diterMat);
 
